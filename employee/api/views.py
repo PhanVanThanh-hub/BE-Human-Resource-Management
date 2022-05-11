@@ -1,11 +1,7 @@
 from django.http import JsonResponse
-
-from employee.models import *
-from rest_framework import viewsets, generics
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
-from rest_framework.permissions import AllowAny,IsAdminUser
-from .serializers import *
+from rest_framework.permissions import IsAdminUser
 from .filtersSet import *
 from datetime import datetime
 
@@ -20,15 +16,14 @@ def remove_accents(input_str):
 		else:
 			s += c
 	return s
+
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
-    permission_classes=[AllowAny,]
+    permission_classes=[IsAdminUser,]
     serializer_class = EmployeeSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filter_class = EmployeeFilter
     ordering  = ['role']
-
-
 
     def create(self, request):
         new_employee = request.data
@@ -79,12 +74,12 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
 class RoleViewSet(viewsets.ModelViewSet):
     queryset = Role.objects.all()
-    permission_classes=[AllowAny,]
+    permission_classes=[IsAdminUser,]
     serializer_class = RoleSerializer
 
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
-    permission_classes=[AllowAny,]
+    permission_classes=[IsAdminUser,]
     serializer_class = GroupSerializer
     ordering = ['id']
 
