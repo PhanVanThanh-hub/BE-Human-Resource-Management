@@ -23,6 +23,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     serializer_class = EmployeeSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filter_class = EmployeeFilter
+    lookup_field = 'slug'
     ordering  = ['role']
 
     def create(self, request):
