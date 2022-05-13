@@ -7,7 +7,7 @@ from login.api.views import *
 router = routers.DefaultRouter()
 router.register('employee', EmployeeViewSet, basename="employee-view-set")
 router.register('getRole', RoleViewSet, basename="role-view-set")
-router.register('getGroup', GroupViewSet, basename="group-view-set")
+router.register('group', GroupViewSet, basename="group-view-set")
 router.register('payroll', PayrollViewSet, basename="payroll-view-set")
 urlpatterns = [
     path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),

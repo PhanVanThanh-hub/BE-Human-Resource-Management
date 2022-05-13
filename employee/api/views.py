@@ -57,7 +57,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     lookup_field = 'slug'
     ordering  = ['role']
 
-    def create(self, request):
+    def create(self, request, *args, **kwargs):
         new_employee = request.data
         username = remove_accents((new_employee['first_name']+new_employee['last_name']).replace(" ", ""))
         index = 1
@@ -82,8 +82,8 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         print(user)
         group = Group.objects.get(id=new_employee['group'])
         role = Role.objects.get(id=new_employee['role'])
-        join_date = datetime.strptime(new_employee['join_date'][:10], "%Y-%M-%d")
-        date_of_birth = datetime.strptime(new_employee['date_of_birth'][:10], "%Y-%M-%d")
+        join_date = datetime.datetime.strptime(new_employee['join_date'][:10], "%Y-%M-%d")
+        date_of_birth = datetime.datetime.strptime(new_employee['date_of_birth'][:10], "%Y-%M-%d")
 
         employee = Employee.objects.create(
             user=user,
@@ -117,7 +117,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 
 class PayrollViewSet(viewsets.ModelViewSet):
     queryset = Payroll.objects.all()
-    permission_classes=[IsAuthenticated,]
+    permission_classes=[IsAdminUser,]
     serializer_class = PayrollSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filter_class = PayrollFilter
@@ -126,7 +126,7 @@ class PayrollViewSet(viewsets.ModelViewSet):
 
 class PayrollViewSetAction(generics.ListCreateAPIView):
     queryset = Payroll.objects.all()
-    permission_classes=[IsAuthenticated,]
+    permission_classes=[IsAdminUser,]
     serializer_class = PayrollSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filter_class = PayrollFilter
