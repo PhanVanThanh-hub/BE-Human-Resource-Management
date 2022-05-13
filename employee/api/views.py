@@ -1,9 +1,11 @@
 from django.http import JsonResponse
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
-from rest_framework.permissions import IsAdminUser
+from rest_framework import filters,generics
+from rest_framework.permissions import IsAuthenticated, AllowAny,IsAdminUser
 from .filtersSet import *
-from datetime import datetime
+import datetime
+import calendar
+import random
 
 s1 = u'ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝàáâãèéêìíòóôõùúýĂăĐđĨĩŨũƠơƯưẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹ'
 s0 = u'AAAAEEEIIOOOOUUYaaaaeeeiioooouuyAaDdIiUuOoUuAaAaAaAaAaAaAaAaAaAaAaAaEeEeEeEeEeEeEeEeIiIiOoOoOoOoOoOoOoOoOoOoOoOoUuUuUuUuUuUuUuYyYyYyYy'
@@ -16,6 +18,35 @@ def remove_accents(input_str):
 		else:
 			s += c
 	return s
+
+# def add_months(sourcedate, months):
+#     month  = sourcedate.month - 1 + months
+#     year  = sourcedate.year + month // 12
+#     month = month % 12 + 1
+#     day  = min(sourcedate.day, calendar.monthrange(year,month)[1])
+#     return datetime.date(year, month, day)
+#
+# end_date = datetime.date.today()
+#
+# class CreatePayRoll():
+#     employees = Employee.objects.all()
+#     for employee in employees:
+#         print("employee", employee.user)
+#         index=1
+#         while True:
+#             randomInt = random.randint(-5, 20)
+#             actual_salary= round(employee.earnings+(employee.earnings/100)*randomInt,0)
+#             print("Month:",add_months(employee.join_date ,index),':',employee.earnings,':',randomInt,':',type(int(actual_salary)))
+#             index=index+1
+#             # payroll=Payroll.objects.create(
+#             #     name=employee,
+#             #     salary=int(actual_salary),
+#             #     date=add_months(employee.join_date ,index)
+#             # )
+#             if add_months(employee.join_date,index) >= datetime.date.today():
+#                 break
+#         print("--------------")
+
 
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
@@ -83,5 +114,29 @@ class GroupViewSet(viewsets.ModelViewSet):
     permission_classes=[IsAdminUser,]
     serializer_class = GroupSerializer
     ordering = ['id']
+
+class PayrollViewSet(viewsets.ModelViewSet):
+    queryset = Payroll.objects.all()
+    permission_classes=[IsAuthenticated,]
+    serializer_class = PayrollSerializer
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filter_class = PayrollFilter
+    ordering = ['-date']
+
+
+class PayrollViewSetAction(generics.ListCreateAPIView):
+    queryset = Payroll.objects.all()
+    permission_classes=[IsAuthenticated,]
+    serializer_class = PayrollSerializer
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filter_class = PayrollFilter
+    lookup_field = 'name'
+    ordering = ['-date']
+
+    def get_queryset(self):
+        slug = self.kwargs["pk"]
+        employee = Employee.objects.get(slug=slug)
+        queryset = Payroll.objects.filter(name = employee)
+        return queryset
 
 

@@ -9,6 +9,14 @@ class EmployeeFilter(django_filters.FilterSet):
         model = Employee
         fields = {
             'role': ['exact'],
-            'group':['exact'],
+            'group': ['exact'],
+        }
 
+class PayrollFilter(django_filters.FilterSet):
+    class Meta:
+        model = Payroll
+        fields = {
+            'id': ['exact'],
+            'date': ['exact'],
+            'salary': ['exact'],
         }

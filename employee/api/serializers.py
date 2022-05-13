@@ -4,7 +4,7 @@ from employee.models import *
 
 class EmployeeSerializer(serializers.ModelSerializer):
     role = serializers.ReadOnlyField(source='role.title')
-    group =serializers.ReadOnlyField(source='group.name_group')
+    group = serializers.ReadOnlyField(source='group.name_group')
     first_name = serializers.CharField(source="user.first_name")
     last_name = serializers.CharField(source="user.last_name")
     email = serializers.CharField(source="user.email")
@@ -26,4 +26,10 @@ class RoleSerializer(serializers.ModelSerializer):
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
+        fields = "__all__"
+
+class PayrollSerializer(serializers.ModelSerializer):
+    name = serializers.ReadOnlyField(source='name.slug')
+    class Meta:
+        model = Payroll
         fields = "__all__"
