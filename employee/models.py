@@ -4,7 +4,7 @@ from django.template.defaultfilters import slugify
 # Create your models here.
 
 class Group(models.Model):
-    name_group = models.CharField(max_length=100)
+    name_group = models.CharField(max_length=100,unique=True)
 
     def __str__(self):
         return str(self.name_group)
@@ -16,8 +16,8 @@ class Role(models.Model):
         return str(self.title)
 class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,related_name='name')
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True)
-    group = models.ForeignKey(Group , on_delete=models.CASCADE,null=True)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
+    group = models.ForeignKey(Group , on_delete=models.CASCADE,null=True, blank=True)
     sex = models.BooleanField()
     ethnicity = models.CharField(max_length=100)
     earnings = models.IntegerField()

@@ -4,6 +4,7 @@ from rest_framework import filters,generics
 from rest_framework.permissions import IsAuthenticated, AllowAny,IsAdminUser
 from .filtersSet import *
 import datetime
+from .pageSerializers import  ResultsSetPagination
 import calendar
 import random
 
@@ -47,6 +48,15 @@ def remove_accents(input_str):
 #                 break
 #         print("--------------")
 
+class EmployeeViewSetSalary(viewsets.ModelViewSet):
+    queryset = Employee.objects.all()
+    permission_classes=[IsAdminUser,]
+    serializer_class = EmployeeSerializer
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    pagination_class = ResultsSetPagination
+    filter_class = EmployeeFilter
+    lookup_field = 'slug'
+    ordering  = ['-earnings']
 
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
@@ -138,5 +148,11 @@ class PayrollViewSetAction(generics.ListCreateAPIView):
         employee = Employee.objects.get(slug=slug)
         queryset = Payroll.objects.filter(name = employee)
         return queryset
+
+
+
+
+
+
 
 
