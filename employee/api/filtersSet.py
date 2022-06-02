@@ -5,6 +5,9 @@ from rest_framework import viewsets
 
 
 class EmployeeFilter(django_filters.FilterSet):
+    join_date = django_filters.NumberFilter(field_name='join_date', lookup_expr='month')
+    birthday = django_filters.NumberFilter(field_name='date_of_birth', lookup_expr='month')
+    role = django_filters.CharFilter(field_name='role__title',lookup_expr='iexact' )
     class Meta:
         model = Employee
         fields = {

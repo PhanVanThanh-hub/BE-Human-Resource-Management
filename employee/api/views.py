@@ -39,12 +39,12 @@ def remove_accents(input_str):
 #             actual_salary= round(employee.earnings+(employee.earnings/100)*randomInt,0)
 #             print("Month:",add_months(employee.join_date ,index),':',employee.earnings,':',randomInt,':',type(int(actual_salary)))
 #             index=index+1
-#             # payroll=Payroll.objects.create(
-#             #     name=employee,
-#             #     salary=int(actual_salary),
-#             #     date=add_months(employee.join_date ,index)
-#             # )
-#             if add_months(employee.join_date,index) >= datetime.date.today():
+#             payroll=Payroll.objects.create(
+#                 name=employee,
+#                 salary=int(actual_salary),
+#                 date=add_months(employee.join_date ,index)
+#             )
+#             if add_months(employee.join_date,index+1) >= datetime.date.today():
 #                 break
 #         print("--------------")
 
@@ -92,9 +92,8 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         print(user)
         group = Group.objects.get(id=new_employee['group'])
         role = Role.objects.get(id=new_employee['role'])
-        join_date = datetime.datetime.strptime(new_employee['join_date'][:10], "%Y-%M-%d")
-        date_of_birth = datetime.datetime.strptime(new_employee['date_of_birth'][:10], "%Y-%M-%d")
-
+        join_date = datetime.datetime.strptime(new_employee['join_date'][:10], "%Y-%m-%d")
+        date_of_birth = datetime.datetime.strptime(new_employee['date_of_birth'][:10], "%Y-%m-%d")
         employee = Employee.objects.create(
             user=user,
             date_of_birth=date_of_birth,

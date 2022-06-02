@@ -16,6 +16,7 @@ urlpatterns = [
     path('users/', UsersViewSet.as_view()),
     path('decentralization/',decentralizationUser.as_view() ,),
     path('payroll/<pk>/', PayrollViewSetAction.as_view()),
+    path('profile/',ProfileViewSet.as_view())
     # path('create_payroll',CreatePayRoll)
 ]
 

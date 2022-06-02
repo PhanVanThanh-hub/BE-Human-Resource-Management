@@ -9,8 +9,8 @@ from urllib.parse import urlparse
 import urllib.request as urllib2
 import io
 import datetime
-
-
+from employee.models import *
+from employee.api.serializers import *
 
 class UsersViewSet(generics.ListCreateAPIView):
     queryset = User.objects.all()
@@ -19,7 +19,21 @@ class UsersViewSet(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["id", "username"]
 
+class ProfileViewSet(generics.GenericAPIView):
+    queryset = Employee.objects.all()
+    permission_classes = [AllowAny, ]
+    serializer_class = EmployeeSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["id", "user"]
+    lookup_field = 'slug'
 
+    def post(self, request):
+        getData = request.data
+        user = User.objects.get(id=getData["data"]["id"])
+        profile = Employee.objects.get(user=user)
+        return JsonResponse(
+            {"user": EmployeeSerializer(profile, context=self.get_serializer_context()).data, }
+        )
 
 from django.contrib.auth import authenticate
 class decentralizationUser(generics.ListCreateAPIView):
