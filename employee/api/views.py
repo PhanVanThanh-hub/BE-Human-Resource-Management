@@ -35,15 +35,17 @@ def remove_accents(input_str):
 #         print("employee", employee.user)
 #         index=1
 #         while True:
-#             randomInt = random.randint(-5, 20)
+#             randomInt = random.randint(-5, 10)
 #             actual_salary= round(employee.earnings+(employee.earnings/100)*randomInt,0)
 #             print("Month:",add_months(employee.join_date ,index),':',employee.earnings,':',randomInt,':',type(int(actual_salary)))
-#             index=index+1
+#
 #             payroll=Payroll.objects.create(
 #                 name=employee,
 #                 salary=int(actual_salary),
 #                 date=add_months(employee.join_date ,index)
 #             )
+#             index = index + 1
+#             print("index:",index)
 #             if add_months(employee.join_date,index+1) >= datetime.date.today():
 #                 break
 #         print("--------------")
@@ -126,7 +128,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 
 class PayrollViewSet(viewsets.ModelViewSet):
     queryset = Payroll.objects.all()
-    permission_classes=[IsAdminUser,]
+    permission_classes=[IsAuthenticated]
     serializer_class = PayrollSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filter_class = PayrollFilter
@@ -135,7 +137,7 @@ class PayrollViewSet(viewsets.ModelViewSet):
 
 class PayrollViewSetAction(generics.ListCreateAPIView):
     queryset = Payroll.objects.all()
-    permission_classes=[IsAdminUser,]
+    permission_classes=[IsAdminUser]
     serializer_class = PayrollSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filter_class = PayrollFilter
@@ -144,6 +146,23 @@ class PayrollViewSetAction(generics.ListCreateAPIView):
 
     def get_queryset(self):
         slug = self.kwargs["pk"]
+
+        employee = Employee.objects.get(slug=slug)
+        queryset = Payroll.objects.filter(name = employee)
+        return queryset
+
+class PayrollViewSetStaff(generics.ListCreateAPIView):
+    queryset = Payroll.objects.all()
+    permission_classes=[IsAuthenticated]
+    serializer_class = PayrollSerializer
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filter_class = PayrollFilter
+    lookup_field = 'name'
+    ordering = ['-date']
+
+    def get_queryset(self):
+        slug = self.kwargs["pk"]
+
         employee = Employee.objects.get(slug=slug)
         queryset = Payroll.objects.filter(name = employee)
         return queryset
