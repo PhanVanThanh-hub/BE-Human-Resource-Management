@@ -16,6 +16,21 @@ class EmployeeSerializer(serializers.ModelSerializer):
             'url': {'lookup_field': 'slug'}
         }
 
+class EmployeeStaffSerializer(serializers.ModelSerializer):
+    role = serializers.ReadOnlyField(source='role.title')
+    email = serializers.CharField(source="user.email")
+    first_name = serializers.CharField(source="user.first_name")
+    last_name = serializers.CharField(source="user.last_name")
+    class Meta:
+        model = Employee
+        exclude = ['earnings','slug','user','group']
+        lookup_field = 'slug'
+        extra_kwargs = {
+            'url': {'lookup_field': 'slug'}
+        }
+
+
+
 
 
 

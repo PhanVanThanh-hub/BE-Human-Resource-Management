@@ -169,6 +169,14 @@ class PayrollViewSetStaff(generics.ListCreateAPIView):
 
 
 
+class EmployeeStaffViewSet(viewsets.ModelViewSet):
+    queryset = Employee.objects.all()
+    permission_classes=[IsAuthenticated,]
+    serializer_class = EmployeeStaffSerializer
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filter_class = EmployeeFilter
+    lookup_field = 'slug'
+    ordering  = ['role']
 
 
 
