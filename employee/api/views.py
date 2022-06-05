@@ -4,7 +4,7 @@ from rest_framework import filters,generics
 from rest_framework.permissions import IsAuthenticated, AllowAny,IsAdminUser
 from .filtersSet import *
 import datetime
-from .pageSerializers import  ResultsSetPagination
+from .pageSerializers import  ResultsSetPagination,ResultsSetPaginationMember
 import calendar
 import random
 
@@ -167,8 +167,6 @@ class PayrollViewSetStaff(generics.ListCreateAPIView):
         queryset = Payroll.objects.filter(name = employee)
         return queryset
 
-
-
 class EmployeeStaffViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     permission_classes=[IsAuthenticated,]
@@ -178,6 +176,15 @@ class EmployeeStaffViewSet(viewsets.ModelViewSet):
     lookup_field = 'slug'
     ordering  = ['role']
 
+class EmployeePaginationViewSet(viewsets.ModelViewSet):
+    queryset = Employee.objects.all()
+    permission_classes=[IsAdminUser,]
+    serializer_class = EmployeeSerializer
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filter_class = EmployeeFilter
+    pagination_class = ResultsSetPaginationMember
+    lookup_field = 'slug'
+    ordering  = ['role','join_date']
 
 
 
